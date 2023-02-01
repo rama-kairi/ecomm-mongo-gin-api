@@ -76,11 +76,11 @@ func (u userController) Create(c *gin.Context) {
 	}
 
 	// Set the user id
-	user.ID = primitive.NewObjectID()
+	// user.ID = primitive.NewObjectID()
 
 	// Create the user in the database
 	ctx := context.TODO()
-	_, err := u.coll.InsertOne(ctx, user)
+	res, err := u.coll.InsertOne(ctx, user)
 	if err != nil {
 		log.Println(err)
 		utils.Response(c, http.StatusInternalServerError, nil, "Error creating user")
@@ -88,7 +88,7 @@ func (u userController) Create(c *gin.Context) {
 	}
 
 	// Marshal the user into json
-	utils.Response(c, http.StatusCreated, user, "user created successfully")
+	utils.Response(c, http.StatusCreated, res.InsertedID, "user created successfully")
 }
 
 // Delete a user
