@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
@@ -75,8 +76,9 @@ func (u userController) Create(c *gin.Context) {
 		return
 	}
 
-	// Set the user id
-	// user.ID = primitive.NewObjectID()
+	// Set CreatedAt and UpdatedAt
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
 
 	// Create the user in the database
 	ctx := context.TODO()
@@ -123,12 +125,14 @@ func (u userController) Update(c *gin.Context) {
 		utils.Response(c, http.StatusBadRequest, nil, "Error getting user")
 		return
 	}
+
 	// Get the user payload from the request
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		utils.Response(c, http.StatusBadRequest, nil, "Error updating user")
 		return
 	}
+	user.UpdatedAt = time.Now()
 
 	// Update the user in the database
 	ctx := context.TODO()
